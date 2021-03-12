@@ -1,0 +1,17 @@
+file ImageDir1615475296367/img0.png
+duration 0.4
+file ImageDir1615475296367/img1.png
+duration 0.4
+file ImageDir1615475296367/img2.png
+duration 0.4
+file ImageDir1615475296367/img3.png
+duration 0.4
+file ImageDir1615475296367/img4.png
+duration 0.4
+file ImageDir1615475296367/img5.png
+duration 0.4
+file ImageDir1615475296367/img6.png
+duration 0.4
+file ImageDir1615475296367/img7.png
+duration 0.4
+file ImageDir1615475296367/img7.png

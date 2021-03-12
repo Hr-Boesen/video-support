@@ -1,0 +1,11 @@
+file ImageDir1615481220701/img0.png
+duration 0.4
+file ImageDir1615481220701/img1.png
+duration 0.4
+file ImageDir1615481220701/img2.png
+duration 0.4
+file ImageDir1615481220701/img3.png
+duration 0.4
+file ImageDir1615481220701/img4.png
+duration 0.4
+file ImageDir1615481220701/img4.png
