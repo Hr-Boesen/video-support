@@ -8,6 +8,8 @@ const path = require("path");
 var rimraf = require("rimraf");
 const mysql = require('mysql');
 
+//npm run dev -> to run nodemon
+
 // How to create a connection pool and a API with mysql node module: https://www.youtube.com/watch?v=LVfH5FDOa3o
 
 
