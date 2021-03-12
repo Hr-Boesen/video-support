@@ -1,5 +1,6 @@
 const express = require('express'); 
 const db = require('../db'); 
+const server = require('../server')
 
 const router = express.Router(); 
 
@@ -48,9 +49,11 @@ router.patch('/update/:id', async (req, res, next) => {
 })
 
 router.post('/post', async (req, res, next) => {
-    try{ 
+    try{
+         server.createImageFolderAndImages(req.body.urlJobs)
+               console.log(req.body.fk_customer_id, req.body.video_path, req.body.video_url, req.body.browser_type, req.body.issue_description);
         console.log("post")
-        let results = await db.create(req.body.userid, req.body.text); 
+        let results = await db.create(req.body.fk_customer_id, req.body.video_path, req.body.video_url, req.body.browser_type, req.body.issue_description); 
         res.status(200).json({
             msg: "Posted"
           })

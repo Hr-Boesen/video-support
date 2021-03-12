@@ -6,12 +6,16 @@ const app = new express();
 const bodyParser = require('body-parser');
 const path = require("path");
 var rimraf = require("rimraf");
-const mysql = require('mysql');
+const apiRouter = require('./routes')
+//npm run dev -> to run nodemon
+
+// Setting up API
+app.use(express.json()); 
+app.use('/api/video', apiRouter);
 
 //npm run dev -> to run nodemon
 
 // How to create a connection pool and a API with mysql node module: https://www.youtube.com/watch?v=LVfH5FDOa3o
-
 
 app.use(express.static(path.join(__dirname, '../public/dist')));
 
@@ -26,38 +30,6 @@ app.use(bodyParser.urlencoded({
     limit: '200mb',
     extended: true 
 }));
-
-
-app.post("/data", (req, res) => {
-    var dataUrlArray = req.body.dataUrlArray;
-    var browserType = req.body.browserType
-    var customerId = req.body.customerId
-    var issueDescription = req.body.issueDescription
-
-    createImageFolderAndImages(dataUrlArray)
-    res.json({
-        response: "dataURL's received"
-    })
-
-    var connection = mysql.createConnection({
-        host     : 'db-mysql-ams3-47998-do-user-4805626-0.b.db.ondigitalocean.com',
-        port     :  25060,
-        user     : 'Christian',
-        password : 'og72s02q07ubv5a0',
-        database : 'support-video'
-      });
-       
-     connection.connect();
-  
- 
-connection.query('INSERT INTO video SET ?', {fk_customer_id: customerId, browser_type: browserType} , function (error, results, fields) {
-    if (error) throw error;
-    console.log("inserted customer_name");
-  });
-
-connection.end();
-
-})
 
 const createImageFolderAndImages = async (dataUrlArray) => {
 
@@ -177,3 +149,5 @@ const createVideoFile = (durationFile) => {
         cmd.runSync(finalString);
     })
 }
+
+exports.createImageFolderAndImages = createImageFolderAndImages;

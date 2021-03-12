@@ -74,12 +74,10 @@ users.update = (id, userid, text) => {
     })
 }
 
-users.create = (userid, text) => {
+users.create = (fk_customer_id, video_path, video_url, browser_type, issue_description) => {
     return new Promise((resolve, reject) => {
 
-        console.log(userid, text);
-
-        pool.query('INSERT INTO users SET userid = ?, text = ?',[userid, text], (err, results) => {
+        pool.query('INSERT INTO video SET fk_customer_id = ?, video_path = ?, video_url = ?, browser_type = ?, issue_description = ?',[fk_customer_id, video_path, video_url, browser_type, issue_description], (err, results) => {
             if(err){
                 return reject(err)
             }
