@@ -12,10 +12,12 @@ const pool = mysql.createPool({
 
 let users = {}
 
+// This is the video section of the API
+
 users.readAll = () => {
 return new Promise((resolve, reject) => {
 
-    pool.query('SELECT * FROM users', (err, results) => {
+    pool.query('SELECT * FROM video', (err, results) => {
         if(err){
             return reject(err)
         }
@@ -27,10 +29,10 @@ return new Promise((resolve, reject) => {
 })
 }; 
 
-users.readOne = (id) => {
+users.readOne = (video_id) => {
     return new Promise((resolve, reject) => {
 
-        pool.query('SELECT * FROM users WHERE id = ?',[id], (err, results) => {
+        pool.query('SELECT * FROM video WHERE video_id = ?',[video_id], (err, results) => {
             if(err){
                 return reject(err)
             }
@@ -42,10 +44,10 @@ users.readOne = (id) => {
     })
 }
 
-users.delete = (id) => {
+users.delete = (video_id) => {
     return new Promise((resolve, reject) => {
 
-        pool.query('DELETE FROM users WHERE id = ?',[id], (err, results) => {
+        pool.query('DELETE FROM video WHERE video_id = ?',[video_id], (err, results) => {
             if(err){
                 return reject(err)
             }
@@ -57,12 +59,10 @@ users.delete = (id) => {
     })
 }
 
-users.update = (id, userid, text) => {
+users.update = (video_id, fk_customer_id, video_path, video_url, browser_type, issue_description) => {
     return new Promise((resolve, reject) => {
 
-        console.log(id, userid, text);
-
-        pool.query('UPDATE users SET text = ?, userid = ? WHERE id = ?',[text, userid, id], (err, results) => {
+        pool.query('UPDATE video SET fk_customer_id = ?, video_path = ?, video_url = ?, browser_type = ?, issue_description = ? WHERE video_id = ?',[fk_customer_id, video_path, video_url, browser_type, issue_description, video_id], (err, results) => {
             if(err){
                 return reject(err)
             }

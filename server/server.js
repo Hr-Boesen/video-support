@@ -9,8 +9,18 @@ var rimraf = require("rimraf");
 const apiRouter = require('./routes')
 //npm run dev -> to run nodemon
 
+
+app.use(bodyParser.json({
+    limit: '200mb'
+}));
+app.use(bodyParser.urlencoded({
+    limit: '200mb',
+    extended: true 
+}));
+
 // Setting up API
 app.use(express.json()); 
+
 app.use('/api/video', apiRouter);
 
 //npm run dev -> to run nodemon
@@ -23,13 +33,6 @@ app.listen(3000, () => {
     console.log("Server runs at port 3000");
 });
 
-app.use(bodyParser.json({
-    limit: '200mb'
-}));
-app.use(bodyParser.urlencoded({
-    limit: '200mb',
-    extended: true 
-}));
 
 const createImageFolderAndImages = async (dataUrlArray) => {
 

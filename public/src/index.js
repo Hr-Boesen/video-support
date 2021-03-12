@@ -18,7 +18,7 @@ class sendNote {
      sendDataUrlArray() {
 
          Promise.all(this.arrURLJobs).then((urlJobs)=>{
-            fetch("/data", {
+            fetch("/api/video/post", {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -26,9 +26,9 @@ class sendNote {
                 },
                 body: JSON.stringify({
                 dataUrlArray: urlJobs,
-                browserType: this.browserType,
-                customerId: 1, 
-                issueDescription: "Issue description test"
+                browser_type: this.browserType,
+                fk_customer_id: 1, 
+                issue_description: "Issue description test"
                 })
             })
             .then((response) => {
