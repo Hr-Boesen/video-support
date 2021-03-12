@@ -7,6 +7,9 @@ const bodyParser = require('body-parser');
 const path = require("path");
 var rimraf = require("rimraf");
 const apiRouter = require('./routes')
+// this is just to move a file
+const moveFile = require('move-file');
+ 
 //npm run dev -> to run nodemon
 
 
@@ -144,12 +147,20 @@ const createImageFolderAndImages = async (dataUrlArray) => {
 
 }
 
+const  moveFileToCustomerFolder = async(fileName, customerFolder) =>{
+    await moveFile(fileName, customerFolder );
+    console.log('The file has been moved');
+}
+
 const createVideoFile = (durationFile) => {
-    let dateString = Date.now()
-    let finalString = "ffmpeg -y -f concat -i imageFile.txt -vsync vfr -pix_fmt yuv420p " + dateString + "output.mp4"
+    let fileName = Date.now() + "output.mp4"
+    let finalString = "ffmpeg -y -f concat -i imageFile.txt -vsync vfr -pix_fmt yuv420p "  + fileName
     let imageFile = fs.writeFile('imageFile.txt', durationFile, () => {
         console.log("The file has been written");
+        console.log(finalString);
         cmd.runSync(finalString);
+
+       moveFileToCustomerFolder(fileName, 'video_repository/customer_id_2/' + fileName)
     })
 }
 
