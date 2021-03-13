@@ -9,9 +9,11 @@ var rimraf = require("rimraf");
 const apiRouter = require('./routes')
 // this is just to move a file
 const moveFile = require('move-file');
- 
-//npm run dev -> to run nodemon
+//allows cross site scripting from localhost
+const cors = require('cors') 
+app.use(cors())
 
+//npm run dev -> to run nodemon
 
 app.use(bodyParser.json({
     limit: '200mb'
