@@ -39,7 +39,7 @@ app.listen(3000, () => {
 });
 
 
-const createImageFolderAndImages = async (dataUrlArray, customerId, videoFileName) => {
+const createImageFolderAndImages = async (dataUrlArray, videoFileName, videoUrlServerPath) => {
 
     let durationAndImgURL = "";
     var imageDir = './ImageDir' + Date.now();
@@ -146,7 +146,7 @@ const createImageFolderAndImages = async (dataUrlArray, customerId, videoFileNam
 
     
 
-    createVideoFile(durationFile, customerId, videoFileName)
+    createVideoFile(durationFile, videoFileName, videoUrlServerPath)
 
     rimraf(imageDir, function () { console.log("imageDir folder deleted"); });
 
@@ -157,7 +157,10 @@ const createFileNameAndTimeStamp = (customerId)=>{
     const timeStamp = Date.now()
     let videoFileName = customerId + "id" + timeStamp + ".mp4"
 
-    return {videoFileName, timeStamp}
+    let videoUrlServerPath = 'public/dist/video_repository/customer' + customerId + '/' + videoFileName
+    let videoUrl = 'localhost:3000/video_repository/customer' + customerId + '/' + videoFileName
+
+    return {videoFileName, timeStamp, videoUrl, videoUrlServerPath }
 }
 
 const  moveFileToCustomerFolder = async(fileName, customerFolder) =>{
@@ -165,7 +168,7 @@ const  moveFileToCustomerFolder = async(fileName, customerFolder) =>{
     console.log('The file has been moved');
 }
 
-const createVideoFile = (durationFile, customerId, videoFileName) => {
+const createVideoFile = (durationFile,videoFileName, videoUrlServerPath) => {
     let finalString = "ffmpeg -y -f concat -i imageFile.txt -vsync vfr -pix_fmt yuv420p "  + videoFileName
     let imageFile = fs.writeFile('imageFile.txt', durationFile, () => {
         console.log("The file has been written");
@@ -173,7 +176,7 @@ const createVideoFile = (durationFile, customerId, videoFileName) => {
         cmd.runSync(finalString);
 
        // move file to the customers folder
-       moveFileToCustomerFolder(videoFileName, 'video_repository/customer' + customerId + '/' + videoFileName)
+       moveFileToCustomerFolder(videoFileName, videoUrlServerPath)
     })
 }
 

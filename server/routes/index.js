@@ -53,9 +53,8 @@ router.patch('/update/:id', async (req, res, next) => {
 router.post('/post', async (req, res, next) => {
     try{
 
-         const {videoFileName, timeStamp} = server.createFileNameAndTimeStamp(req.body.fk_customer_id);
-         server.createImageFolderAndImages(req.body.dataUrlArray, req.body.fk_customer_id, videoFileName)
-         const videoUrl = "video_url test"
+         const {videoFileName, timeStamp, videoUrl, videoUrlServerPath} = server.createFileNameAndTimeStamp(req.body.fk_customer_id);
+         server.createImageFolderAndImages(req.body.dataUrlArray, videoFileName, videoUrlServerPath)
          
             
          await db.create(req.body.fk_customer_id, videoFileName, videoUrl, req.body.browser_type, req.body.issue_description, timeStamp); 
