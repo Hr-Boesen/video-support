@@ -39,7 +39,7 @@ app.listen(3000, () => {
 });
 
 
-const createImageFolderAndImages = async (dataUrlArray) => {
+const createImageFolderAndImages = async (dataUrlArray, customerId) => {
 
     let durationAndImgURL = "";
     var imageDir = './ImageDir' + Date.now();
@@ -143,7 +143,7 @@ const createImageFolderAndImages = async (dataUrlArray) => {
             durationFile += `file ${imageDir}/img${index}.png`
         }
     }
-    createVideoFile(durationFile)
+    createVideoFile(durationFile, customerId)
 
     rimraf(imageDir, function () { console.log("imageDir folder deleted"); });
 
@@ -154,16 +154,18 @@ const  moveFileToCustomerFolder = async(fileName, customerFolder) =>{
     console.log('The file has been moved');
 }
 
-const createVideoFile = (durationFile) => {
-    let fileName = Date.now() + "output.mp4"
+const createVideoFile = (durationFile, customerId) => {
+    let fileName = customerId + "id" + Date.now() + ".mp4"
     let finalString = "ffmpeg -y -f concat -i imageFile.txt -vsync vfr -pix_fmt yuv420p "  + fileName
     let imageFile = fs.writeFile('imageFile.txt', durationFile, () => {
         console.log("The file has been written");
         console.log(finalString);
         cmd.runSync(finalString);
 
-       moveFileToCustomerFolder(fileName, 'video_repository/customer_id_2/' + fileName)
+       moveFileToCustomerFolder(fileName, 'video_repository/customer' + customerId + '/' + fileName)
     })
 }
+
+
 
 exports.createImageFolderAndImages = createImageFolderAndImages;

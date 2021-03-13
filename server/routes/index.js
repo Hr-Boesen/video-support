@@ -53,8 +53,7 @@ router.patch('/update/:id', async (req, res, next) => {
 router.post('/post', async (req, res, next) => {
     try{
 
-        console.log("tak")
-         server.createImageFolderAndImages(req.body.dataUrlArray)
+         server.createImageFolderAndImages(req.body.dataUrlArray, req.body.fk_customer_id)
             
             /*
             video_path -> server
@@ -64,7 +63,6 @@ router.post('/post', async (req, res, next) => {
             req.body.dataUrlArray -> client
             req.body.fk_customer_id -> client
             */
-
 
                console.log(req.body.fk_customer_id, "test_video_path", "test_video_url", req.body.browser_type, req.body.issue_description);
         console.log("post")
