@@ -28,7 +28,7 @@ router.get('/:id', async (req, res, next) => {
 
 router.delete('/delete/:id', async (req, res, next) => {
     try{
-        let results = await db.delete(req.params.id); 
+         await db.delete(req.params.id); 
         res.status(200).json({
             msg: "Deleted"
           })
@@ -40,7 +40,7 @@ router.delete('/delete/:id', async (req, res, next) => {
 
 router.patch('/update/:id', async (req, res, next) => {
     try{
-        let results = await db.update(req.params.id, req.body.fk_customer_id, req.body.video_path, req.body.video_url, req.body.browser_type, req.body.issue_description); 
+        await db.update(req.params.id, req.body.fk_customer_id, req.body.video_path, req.body.video_url, req.body.browser_type, req.body.issue_description); 
         res.status(200).json({
             msg: "Updated"
           })
@@ -53,20 +53,12 @@ router.patch('/update/:id', async (req, res, next) => {
 router.post('/post', async (req, res, next) => {
     try{
 
-         server.createImageFolderAndImages(req.body.dataUrlArray, req.body.fk_customer_id)
+         const {videoFileName, timeStamp} = server.createFileNameAndTimeStamp(req.body.fk_customer_id);
+         server.createImageFolderAndImages(req.body.dataUrlArray, req.body.fk_customer_id, videoFileName)
+         const videoUrl = "video_url test"
+         
             
-            /*
-            video_path -> server
-            video_url -> server
-            req.body.browser_type -> client
-            req.body.issue_description -> client 
-            req.body.dataUrlArray -> client
-            req.body.fk_customer_id -> client
-            */
-
-               console.log(req.body.fk_customer_id, "test_video_path", "test_video_url", req.body.browser_type, req.body.issue_description);
-        console.log("post")
-        let results = await db.create(req.body.fk_customer_id, req.body.video_path, req.body.video_url, req.body.browser_type, req.body.issue_description); 
+         await db.create(req.body.fk_customer_id, videoFileName, videoUrl, req.body.browser_type, req.body.issue_description, timeStamp); 
         res.status(200).json({
             msg: "Posted"
           })

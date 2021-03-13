@@ -39,7 +39,7 @@ app.listen(3000, () => {
 });
 
 
-const createImageFolderAndImages = async (dataUrlArray, customerId) => {
+const createImageFolderAndImages = async (dataUrlArray, customerId, videoFileName) => {
 
     let durationAndImgURL = "";
     var imageDir = './ImageDir' + Date.now();
@@ -143,10 +143,21 @@ const createImageFolderAndImages = async (dataUrlArray, customerId) => {
             durationFile += `file ${imageDir}/img${index}.png`
         }
     }
-    createVideoFile(durationFile, customerId)
+
+    
+
+    createVideoFile(durationFile, customerId, videoFileName)
 
     rimraf(imageDir, function () { console.log("imageDir folder deleted"); });
 
+}
+
+const createFileNameAndTimeStamp = (customerId)=>{
+
+    const timeStamp = Date.now()
+    let videoFileName = customerId + "id" + timeStamp + ".mp4"
+
+    return {videoFileName, timeStamp}
 }
 
 const  moveFileToCustomerFolder = async(fileName, customerFolder) =>{
@@ -154,18 +165,19 @@ const  moveFileToCustomerFolder = async(fileName, customerFolder) =>{
     console.log('The file has been moved');
 }
 
-const createVideoFile = (durationFile, customerId) => {
-    let fileName = customerId + "id" + Date.now() + ".mp4"
-    let finalString = "ffmpeg -y -f concat -i imageFile.txt -vsync vfr -pix_fmt yuv420p "  + fileName
+const createVideoFile = (durationFile, customerId, videoFileName) => {
+    let finalString = "ffmpeg -y -f concat -i imageFile.txt -vsync vfr -pix_fmt yuv420p "  + videoFileName
     let imageFile = fs.writeFile('imageFile.txt', durationFile, () => {
         console.log("The file has been written");
         console.log(finalString);
         cmd.runSync(finalString);
 
-       moveFileToCustomerFolder(fileName, 'video_repository/customer' + customerId + '/' + fileName)
+       // move file to the customers folder
+       moveFileToCustomerFolder(videoFileName, 'video_repository/customer' + customerId + '/' + videoFileName)
     })
 }
 
 
 
 exports.createImageFolderAndImages = createImageFolderAndImages;
+exports.createFileNameAndTimeStamp = createFileNameAndTimeStamp;
