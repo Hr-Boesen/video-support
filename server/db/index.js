@@ -106,4 +106,64 @@ customer.readAll = () => {
     })
     }; 
 
+customer.readOne = (customer_id) => {
+    return new Promise((resolve, reject) => {
+    
+            pool.query('SELECT * FROM customer WHERE customer_id = ?',[customer_id], (err, results) => {
+                if(err){
+                    return reject(err)
+                }
+        
+                return resolve(results[0])
+        
+            })
+        
+        })
+    }
+
+customer.delete = (customer_id) => {
+        return new Promise((resolve, reject) => {
+    
+            pool.query('DELETE FROM customer WHERE customer_id = ?',[customer_id], (err, results) => {
+                if(err){
+                    return reject(err)
+                }
+        
+                return resolve("everything is fine")
+        
+            })
+        
+        })
+    }
+
+customer.create = (customer_name, customer_address, customer_phone, customer_email) => {
+        return new Promise((resolve, reject) => {
+    
+            pool.query('INSERT INTO customer SET customer_name = ?, customer_address = ?, customer_phone = ?, customer_email = ?', [customer_name, customer_address, customer_phone, customer_email], (err, results) => {
+                if(err){
+                    return reject(err)
+                }
+                return resolve("everything is fine")
+        
+            })
+        
+        })
+    }
+
+
+customer.update = (customer_name, customer_address, customer_phone, customer_email, customer_id) => {
+        return new Promise((resolve, reject) => {
+    
+            pool.query('UPDATE customer SET customer_name = ?, customer_address = ?, customer_phone = ?, customer_email = ? WHERE customer_id = ?',[customer_name, customer_address, customer_phone, customer_email, customer_id], (err, results) => {
+                if(err){
+                    return reject(err)
+                }
+        
+                return resolve("everything is fine")
+        
+            })
+        
+        })
+    }
+
 module.exports = {video, customer}

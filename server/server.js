@@ -163,6 +163,17 @@ const createFileNameAndTimeStamp = (customerId)=>{
     return {videoFileName, timeStamp, videoUrl, videoUrlServerPath }
 }
 
+/*
+const createVideoRepositoryDirectoryForNewCustomers = (customer_id) =>{
+    var imageDir = './ImageDir' + Date.now();
+
+    if (!fs.existsSync(imageDir)) {
+        fs.mkdirSync(imageDir);
+    }
+ 
+}
+*/
+
 const  moveFileToCustomerFolder = async(fileName, customerFolder) =>{
     await moveFile(fileName, customerFolder );
     console.log('The file has been moved');

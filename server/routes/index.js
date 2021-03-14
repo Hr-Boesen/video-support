@@ -69,10 +69,61 @@ router.post('video/post', async (req, res, next) => {
 
 // CUSTOMER API
 
+//Get all customers
 router.get('/customer', async (req, res, next) => {
     try{
         let results = await db.customer.readAll(); 
         res.json(results);
+    }catch(e){
+        console.log(e)
+        res.sendStatus(500)
+    }
+})
+
+// Get one customer 
+router.get('/customer/:id', async (req, res, next) => {
+    try{
+        let results = await db.customer.readOne(req.params.id); 
+        res.json(results);
+    }catch(e){
+        console.log(e)
+        res.sendStatus(500)
+    }
+})
+
+//Delete a customer
+router.delete('/customer/delete/:id', async (req, res, next) => {
+    try{
+         await db.customer.delete(req.params.id); 
+        res.status(200).json({
+            msg: "Deleted"
+          })
+    }catch(e){
+        console.log(e)
+        res.sendStatus(500)
+    }
+})
+
+//Add a customer
+router.post('/customer/post', async (req, res, next) => {
+    try{        
+         await db.customer.create(req.body.customer_name, req.body.customer_address, req.body.customer_phone, req.body.customer_email); 
+        res.status(200).json({
+            msg: "Posted"
+          })
+    }catch(e){
+        console.log(e)
+        res.sendStatus(500)
+    }
+})
+
+// Update customer 
+router.patch('/customer/update/:id', async (req, res, next) => {
+    try{
+        await db.customer.update(req.body.customer_name, req.body.customer_address, req.body.customer_phone, req.body.customer_email, req.params.id); 
+        res.status(200).json({
+            msg: "Updated"
+          })
     }catch(e){
         console.log(e)
         res.sendStatus(500)
