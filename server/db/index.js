@@ -10,11 +10,12 @@ const pool = mysql.createPool({
 
 })
 
-let users = {}
+let video = {}
+let customer = {}
 
-// This is the video section of the API
+// VIDEO API
 
-users.readAll = () => {
+video.readAll = () => {
 return new Promise((resolve, reject) => {
 
     pool.query('SELECT * FROM video', (err, results) => {
@@ -29,7 +30,7 @@ return new Promise((resolve, reject) => {
 })
 }; 
 
-users.readOne = (video_id) => {
+video.readOne = (video_id) => {
     return new Promise((resolve, reject) => {
 
         pool.query('SELECT * FROM video WHERE video_id = ?',[video_id], (err, results) => {
@@ -44,7 +45,7 @@ users.readOne = (video_id) => {
     })
 }
 
-users.delete = (video_id) => {
+video.delete = (video_id) => {
     return new Promise((resolve, reject) => {
 
         pool.query('DELETE FROM video WHERE video_id = ?',[video_id], (err, results) => {
@@ -59,10 +60,10 @@ users.delete = (video_id) => {
     })
 }
 
-users.update = (video_id, fk_customer_id, video_path, video_url, browser_type, issue_description) => {
+video.update = (video_id, issue_description) => {
     return new Promise((resolve, reject) => {
 
-        pool.query('UPDATE video SET fk_customer_id = ?, video_path = ?, video_url = ?, browser_type = ?, issue_description = ? WHERE video_id = ?',[fk_customer_id, video_path, video_url, browser_type, issue_description, video_id], (err, results) => {
+        pool.query('UPDATE video SET issue_description = ? WHERE video_id = ?',[issue_description, video_id], (err, results) => {
             if(err){
                 return reject(err)
             }
@@ -74,7 +75,7 @@ users.update = (video_id, fk_customer_id, video_path, video_url, browser_type, i
     })
 }
 
-users.create = (fk_customer_id, video_path, video_url, browser_type, issue_description, timestamp) => {
+video.create = (fk_customer_id, video_path, video_url, browser_type, issue_description, timestamp) => {
     return new Promise((resolve, reject) => {
 
         pool.query('INSERT INTO video SET fk_customer_id = ?, video_path = ?, video_url = ?, browser_type = ?, issue_description = ?, timestamp = ?',[fk_customer_id, video_path, video_url, browser_type, issue_description, timestamp], (err, results) => {
@@ -88,4 +89,21 @@ users.create = (fk_customer_id, video_path, video_url, browser_type, issue_descr
     })
 }
 
-module.exports = users; 
+//CUSTOMER API 
+
+customer.readAll = () => {
+    return new Promise((resolve, reject) => {
+    
+        pool.query('SELECT * FROM customer', (err, results) => {
+            if(err){
+                return reject(err)
+            }
+    
+            return resolve(results)
+    
+        })
+    
+    })
+    }; 
+
+module.exports = {video, customer}

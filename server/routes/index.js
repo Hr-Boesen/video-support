@@ -4,11 +4,11 @@ const server = require('../server')
 
 const router = express.Router();
 
-// This is the video section of the API
+// VIDEO API
 
-router.get('/', async (req, res, next) => {
+router.get('/video', async (req, res, next) => {
     try{
-        let results = await db.readAll(); 
+        let results = await db.video.readAll(); 
         res.json(results);
     }catch(e){
         console.log(e)
@@ -16,9 +16,9 @@ router.get('/', async (req, res, next) => {
     }
 })
 
-router.get('/:id', async (req, res, next) => {
+router.get('/video/:id', async (req, res, next) => {
     try{
-        let results = await db.readOne(req.params.id); 
+        let results = await db.video.readOne(req.params.id); 
         res.json(results);
     }catch(e){
         console.log(e)
@@ -26,9 +26,9 @@ router.get('/:id', async (req, res, next) => {
     }
 })
 
-router.delete('/delete/:id', async (req, res, next) => {
+router.delete('video/delete/:id', async (req, res, next) => {
     try{
-         await db.delete(req.params.id); 
+         await db.video.delete(req.params.id); 
         res.status(200).json({
             msg: "Deleted"
           })
@@ -38,9 +38,9 @@ router.delete('/delete/:id', async (req, res, next) => {
     }
 })
 
-router.patch('/update/:id', async (req, res, next) => {
+router.patch('video/update/:id', async (req, res, next) => {
     try{
-        await db.update(req.params.id, req.body.fk_customer_id, req.body.video_path, req.body.video_url, req.body.browser_type, req.body.issue_description); 
+        await db.video.update(req.params.id, req.body.issue_description); 
         res.status(200).json({
             msg: "Updated"
           })
@@ -50,14 +50,14 @@ router.patch('/update/:id', async (req, res, next) => {
     }
 })
 
-router.post('/post', async (req, res, next) => {
+router.post('video/post', async (req, res, next) => {
     try{
 
          const {videoFileName, timeStamp, videoUrl, videoUrlServerPath} = server.createFileNameAndTimeStamp(req.body.fk_customer_id);
          server.createImageFolderAndImages(req.body.dataUrlArray, videoFileName, videoUrlServerPath)
          
             
-         await db.create(req.body.fk_customer_id, videoFileName, videoUrl, req.body.browser_type, req.body.issue_description, timeStamp); 
+         await db.video.create(req.body.fk_customer_id, videoFileName, videoUrl, req.body.browser_type, req.body.issue_description, timeStamp); 
         res.status(200).json({
             msg: "Posted"
           })
@@ -66,5 +66,19 @@ router.post('/post', async (req, res, next) => {
         res.sendStatus(500)
     }
 })
+
+// CUSTOMER API
+
+router.get('/customer', async (req, res, next) => {
+    try{
+        let results = await db.customer.readAll(); 
+        res.json(results);
+    }catch(e){
+        console.log(e)
+        res.sendStatus(500)
+    }
+})
+
+
 
 module.exports = router; 

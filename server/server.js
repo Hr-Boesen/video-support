@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({
 // Setting up API
 app.use(express.json()); 
 
-app.use('/api/video', apiRouter);
+app.use('/api', apiRouter);
 
 //npm run dev -> to run nodemon
 
