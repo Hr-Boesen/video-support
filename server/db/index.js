@@ -136,10 +136,10 @@ customer.delete = (customer_id) => {
         })
     }
 
-customer.create = (customer_name, customer_address, customer_phone, customer_email) => {
+customer.create = (customer_name, customer_address, customer_phone, customer_email, timestamp) => {
         return new Promise((resolve, reject) => {
     
-            pool.query('INSERT INTO customer SET customer_name = ?, customer_address = ?, customer_phone = ?, customer_email = ?', [customer_name, customer_address, customer_phone, customer_email], (err, results) => {
+            pool.query('INSERT INTO customer SET customer_name = ?, customer_address = ?, customer_phone = ?, customer_email = ?, timestamp = ?', [customer_name, customer_address, customer_phone, customer_email, timestamp], (err, results) => {
                 if(err){
                     return reject(err)
                 }

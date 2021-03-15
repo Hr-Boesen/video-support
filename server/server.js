@@ -163,16 +163,16 @@ const createFileNameAndTimeStamp = (customerId)=>{
     return {videoFileName, timeStamp, videoUrl, videoUrlServerPath }
 }
 
-/*
-const createVideoRepositoryDirectoryForNewCustomers = (customer_id) =>{
-    var imageDir = './ImageDir' + Date.now();
 
-    if (!fs.existsSync(imageDir)) {
-        fs.mkdirSync(imageDir);
+const createVideoRepositoryForNewCustomers = (customer_id) =>{
+    let VideoRepository = './customer' + customer_id;
+
+    if (!fs.existsSync(VideoRepository)) {
+        fs.mkdirSync(VideoRepository);
     }
  
 }
-*/
+
 
 const  moveFileToCustomerFolder = async(fileName, customerFolder) =>{
     await moveFile(fileName, customerFolder );

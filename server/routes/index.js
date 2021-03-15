@@ -106,8 +106,14 @@ router.delete('/customer/delete/:id', async (req, res, next) => {
 
 //Add a customer
 router.post('/customer/post', async (req, res, next) => {
-    try{        
-         await db.customer.create(req.body.customer_name, req.body.customer_address, req.body.customer_phone, req.body.customer_email); 
+    try{ 
+        
+        let timestamp = Date.now();
+        let customerName = req.body.customer_name; 
+
+        //createVideoRepositoryForNewCustomers(timestamp, customerName);
+
+         await db.customer.create(req.body.customer_name, req.body.customer_address, req.body.customer_phone, req.body.customer_email, timestamp); 
         res.status(200).json({
             msg: "Posted"
           })
