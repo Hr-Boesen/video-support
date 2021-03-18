@@ -12,6 +12,8 @@ const pool = mysql.createPool({
 
 let video = {}
 let customer = {}
+let user = {}
+let signUp = {}
 
 // VIDEO API
 
@@ -136,10 +138,10 @@ customer.delete = (customer_id) => {
         })
     }
 
-customer.create = (customer_name, customer_address, customer_phone, customer_email, timestamp) => {
+customer.create = (customer_name, customer_address, customer_phone, customer_email, timestamp, video_repository) => {
         return new Promise((resolve, reject) => {
     
-            pool.query('INSERT INTO customer SET customer_name = ?, customer_address = ?, customer_phone = ?, customer_email = ?, timestamp = ?', [customer_name, customer_address, customer_phone, customer_email, timestamp], (err, results) => {
+            pool.query('INSERT INTO customer SET customer_name = ?, customer_address = ?, customer_phone = ?, customer_email = ?, timestamp = ?, video_repository= ?', [customer_name, customer_address, customer_phone, customer_email, timestamp, video_repository], (err, results) => {
                 if(err){
                     return reject(err)
                 }
@@ -166,4 +168,97 @@ customer.update = (customer_name, customer_address, customer_phone, customer_ema
         })
     }
 
-module.exports = {video, customer}
+    user.create = (email, password, timestamp) => {
+        return new Promise((resolve, reject) => {
+
+            pool.query('SELECT * FROM user WHERE user_email = ?', [email], (err, results) => {
+                if(err){
+                    return reject(err)
+                }
+
+                if(results[0] !== undefined){
+                return resolve({emailExist: true, message: "The email is already in use"})
+                }else{
+                
+                    pool.query('INSERT INTO user SET user_email = ?, user_password = ?, timestamp = ?', [email, password, timestamp], (err, results) => {
+                        if(err){
+                            return reject(err)
+                        }
+                        return resolve("everything is fine")
+                
+                    })
+
+                    return resolve({emailExist: false, message: "User"})  
+                }
+        
+            })
+    
+            
+        
+        })
+    }
+
+    user.login = (email, password) => {
+        return new Promise((resolve, reject) => {
+    
+            pool.query('SELECT * FROM user WHERE user_email = ? AND user_password = ?', ["hgfj", password], (err, results) => {
+                if(err){
+                    return reject(err)
+                }
+
+                if(results[0] !== undefined){
+                return resolve({loggedIn: true, message: "logged in"})
+                }else{
+                return resolve({loggedIn: false, message: "Couldn't login, email or password is wrong"})  
+                }
+        
+            })
+        
+        })
+    }
+
+signUp.create = (timestamp) => {
+        return new Promise((resolve, reject) => {
+
+            let user_id = null; 
+            let customer_id = null;
+
+          pool.query('SELECT * FROM user WHERE timestamp= ?', [timestamp],  (err, results) => {
+                if(err){
+                    return reject(err)
+                }
+               
+                 user_id = results[0].user_id
+                 console.log("user", user_id)
+            })
+
+            pool.query('SELECT * FROM customer WHERE timestamp = ?',[timestamp], (err, results) => {
+                if(err){
+                    return reject(err)
+                }
+                 customer_id = results[0].customer_id
+                 console.log("customer",  customer_id)
+
+           
+
+            if(customer_id !== null){
+            pool.query('INSERT INTO customer_user SET user_id = ?, customer_id = ?', [user_id , customer_id], (err, results) => {
+                if(err){
+                    return reject(err)
+                }
+                return resolve("everything is fine")
+        
+            })
+             }
+         })
+           
+
+
+            //Creates the table that links user and customer
+
+           
+        
+        })
+    }
+
+module.exports = {video, customer, user, signUp}

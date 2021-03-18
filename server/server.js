@@ -9,9 +9,13 @@ var rimraf = require("rimraf");
 const apiRouter = require('./routes')
 // this is just to move a file
 const moveFile = require('move-file');
+
+
+
 //allows cross site scripting from localhost
-const cors = require('cors') 
-app.use(cors())
+//The two lines underneath needs to be activated when running on digital ocean
+//const cors = require('cors') 
+//app.use(cors())
 
 //npm run dev -> to run nodemon
 
@@ -152,23 +156,25 @@ const createImageFolderAndImages = async (dataUrlArray, videoFileName, videoUrlS
 
 }
 
-const createFileNameAndTimeStamp = (customerId)=>{
+const createFileNameAndTimeStamp = (videoRepository, customerId)=>{
 
     const timeStamp = Date.now()
     let videoFileName = customerId + "id" + timeStamp + ".mp4"
 
-    let videoUrlServerPath = 'public/dist/video_repository/customer' + customerId + '/' + videoFileName
-    let videoUrl = 'localhost:3000/video_repository/customer' + customerId + '/' + videoFileName
+    let videoUrlServerPath = 'public/dist/video_repository/' + videoRepository + '/' + videoFileName
+    let videoUrl = 'localhost:3000/video_repository/' + videoRepository + '/' + videoFileName
 
     return {videoFileName, timeStamp, videoUrl, videoUrlServerPath }
 }
 
 
-const createVideoRepositoryForNewCustomers = (customer_id) =>{
-    let VideoRepository = './customer' + customer_id;
+const createVideoRepositoryForNewCustomers = (customerName, timeStamp) =>{
+    let VideoRepository = './public/dist/video_repository/' + timeStamp +'__' + customerName;
 
     if (!fs.existsSync(VideoRepository)) {
         fs.mkdirSync(VideoRepository);
+
+        return timeStamp +'__' + customerName;
     }
  
 }
@@ -195,3 +201,5 @@ const createVideoFile = (durationFile,videoFileName, videoUrlServerPath) => {
 
 exports.createImageFolderAndImages = createImageFolderAndImages;
 exports.createFileNameAndTimeStamp = createFileNameAndTimeStamp;
+exports.createVideoRepositoryForNewCustomers = createVideoRepositoryForNewCustomers;
+

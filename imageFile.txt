@@ -1,11 +1,9 @@
-file ImageDir1615657628886/img0.png
+file ImageDir1615793315932/img0.png
 duration 0.4
-file ImageDir1615657628886/img1.png
+file ImageDir1615793315932/img1.png
 duration 0.4
-file ImageDir1615657628886/img2.png
+file ImageDir1615793315932/img2.png
 duration 0.4
-file ImageDir1615657628886/img3.png
+file ImageDir1615793315932/img3.png
 duration 0.4
-file ImageDir1615657628886/img4.png
-duration 0.4
-file ImageDir1615657628886/img4.png
+file ImageDir1615793315932/img3.png
