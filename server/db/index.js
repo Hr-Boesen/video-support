@@ -141,11 +141,13 @@ customer.delete = (customer_id) => {
 customer.create = (customer_name, customer_address, customer_phone, customer_email, timestamp, video_repository) => {
         return new Promise((resolve, reject) => {
     
-            pool.query('INSERT INTO customer SET customer_name = ?, customer_address = ?, customer_phone = ?, customer_email = ?, timestamp = ?, video_repository= ?', [customer_name, customer_address, customer_phone, customer_email, timestamp, video_repository], (err, results) => {
+            pool.query('INSERT INTO customer SET customer_name = ?, customer_address = ?, customer_phone = ?, customer_email = ?, timestamp = ?, video_repository= ?', [customer_name, customer_address, customer_phone, customer_email, timestamp, video_repository], (err, result) => {
                 if(err){
                     return reject(err)
+                }else {
+                     return resolve(result.insertId) 
                 }
-                return resolve("everything is fine")
+              
         
             })
         
@@ -168,40 +170,30 @@ customer.update = (customer_name, customer_address, customer_phone, customer_ema
         })
     }
 
+//USER 
     user.create = (email, password, timestamp) => {
         return new Promise((resolve, reject) => {
 
-            pool.query('SELECT * FROM user WHERE user_email = ?', [email], (err, results) => {
-                if(err){
-                    return reject(err)
-                }
-
-                if(results[0] !== undefined){
-                return resolve({emailExist: true, message: "The email is already in use"})
-                }else{
-                
-                    pool.query('INSERT INTO user SET user_email = ?, user_password = ?, timestamp = ?', [email, password, timestamp], (err, results) => {
+                    pool.query('INSERT INTO user SET user_email = ?, user_password = ?, timestamp = ?', [email, password, timestamp], (err, result) => {
                         if(err){
+                            console.log(err)
                             return reject(err)
+                        }else{
+                        
+                        // i stedet for at lave en ny forespørgsel, så henter man det nyeste id med insertId på result objekted    
+                        var userId = result.insertId;  
+                        return resolve(userId)     
                         }
-                        return resolve("everything is fine")
-                
+                      
                     })
-
-                    return resolve({emailExist: false, message: "User"})  
-                }
-        
-            })
-    
-            
-        
+                         
         })
     }
 
     user.login = (email, password) => {
         return new Promise((resolve, reject) => {
     
-            pool.query('SELECT * FROM user WHERE user_email = ? AND user_password = ?', ["hgfj", password], (err, results) => {
+            pool.query('SELECT * FROM user WHERE user_email = ? AND user_password = ?', [email, password], (err, results) => {
                 if(err){
                     return reject(err)
                 }
@@ -217,48 +209,57 @@ customer.update = (customer_name, customer_address, customer_phone, customer_ema
         })
     }
 
-signUp.create = (timestamp) => {
+//SIGN UP
+
+signUp.create = (userId, customerId) => {
+
         return new Promise((resolve, reject) => {
 
-            let user_id = null; 
-            let customer_id = null;
+                    pool.query('INSERT INTO customer_user SET user_id = ?, customer_id = ?', [userId , customerId], (err, result) => {
+                
+                        if(err){
+                            return reject(err)
+                        }else{
+                            return resolve(result.insertId)
+                         }
+                })   
+        })}
 
-          pool.query('SELECT * FROM user WHERE timestamp= ?', [timestamp],  (err, results) => {
-                if(err){
-                    return reject(err)
-                }
-               
-                 user_id = results[0].user_id
-                 console.log("user", user_id)
-            })
+signUp.checkUserEmail = (email) => {
+    return new Promise((resolve, reject) => {
 
-            pool.query('SELECT * FROM customer WHERE timestamp = ?',[timestamp], (err, results) => {
-                if(err){
-                    return reject(err)
-                }
-                 customer_id = results[0].customer_id
-                 console.log("customer",  customer_id)
-
-           
-
-            if(customer_id !== null){
-            pool.query('INSERT INTO customer_user SET user_id = ?, customer_id = ?', [user_id , customer_id], (err, results) => {
-                if(err){
-                    return reject(err)
-                }
-                return resolve("everything is fine")
-        
-            })
-             }
-         })
-           
-
-
-            //Creates the table that links user and customer
-
-           
-        
+        pool.query('SELECT * FROM user WHERE user_email = ?', [email], (err, results) => {
+            if(err){
+                return reject(err)
+            }
+        if(results[0] !== undefined){
+            return resolve({continueSignUpUser: false, messageUser: "The email is already in use"})
+            }else{
+            return resolve({continueSignUpUser: true, messageUser: "The email is valied, the Sign Up process can continue"})
+            }
         })
-    }
+
+         
+    })  
+}
+
+signUp.customerNameCheck = (name) => {
+    return new Promise((resolve, reject) => {
+
+        pool.query('SELECT * FROM customer WHERE customer_name = ?', [name], (err, results) => {
+            if(err){
+                return reject(err)
+            }
+        if(results[0] !== undefined){
+            return resolve({continueSignUpCustomer: false, messageCustomer: "The customer name is already in use"})
+            }else{
+            return resolve({continueSignUpCustomer: true, messageCustomer: "The customer name is valid, the Sign Up process can continue"})
+            }
+        })
+
+         
+    })  
+}
+
 
 module.exports = {video, customer, user, signUp}

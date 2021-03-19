@@ -177,6 +177,7 @@ router.post('/user/login', async (req, res, next) => {
 //Add a customer and a user SignUp 
 
 router.post('/signUp/post', async (req, res, next) => {
+    
     try{ 
         
         //Timestamp to be saved in the database and used as a part of the name of the customer video repository 
@@ -185,14 +186,37 @@ router.post('/signUp/post', async (req, res, next) => {
         let customerName = req.body.customer_name; 
 
         let videoRepository = server.createVideoRepositoryForNewCustomers(timestamp, customerName);
+       console.log(1)
+      
+       const checkUserEmail = await db.signUp.checkUserEmail(req.body.user_email); 
+       const customerNameCheck = await db.signUp.customerNameCheck(req.body.customer_name)
 
-         await db.customer.create(req.body.customer_name, req.body.customer_address, req.body.customer_phone, req.body.customer_email, timestamp, videoRepository); 
-         await db.user.create(req.body.user_email, req.body.user_password, timestamp); 
-         await db.signUp.create(timestamp); 
+       // User email or customer name is taken inform the user
+      if(checkUserEmail.continueSignUpUser === false || customerNameCheck.continueSignUpCustomer === false)
+      {
+        return res.status(200).json({...customerNameCheck, ...checkUserEmail})
+      }else {
 
-        res.status(200).json({
-            msg: "User and Customer created"
-          })
+        //Create the user and get the user_id
+       const userId = await db.user.create(req.body.user_email, req.body.user_password, timestamp)
+        //Create the customer and get the customer_id
+       const customerId =  await db.customer.create(req.body.customer_name, req.body.customer_address, req.body.customer_phone, req.body.customer_email, timestamp, videoRepository)
+        //Create the user/customer relation and get the customerUserId
+       const customerUserId = await db.signUp.create(userId, customerId)  
+         
+    
+       //Check if user, customer and relation between the two all have an id
+       if(userId && customerId && customerUserId){
+
+        //User and customer are created and the user can enter the site
+            return res.status(200).json({...customerNameCheck, ...checkUserEmail})
+       }else{
+            return res.status(200).json({message: "Unknown error"}) 
+       }
+
+
+      }
+              
     }catch(e){
         console.log(e)
         res.sendStatus(500)
