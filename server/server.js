@@ -1,6 +1,7 @@
 const fs = require("fs");
 const sharp = require("sharp");
 const cmd = require("node-cmd");
+const cors = require('cors') 
 const express = require('express');
 const app = new express();
 const bodyParser = require('body-parser');
@@ -9,15 +10,10 @@ var rimraf = require("rimraf");
 const apiRouter = require('./routes')
 // this is just to move a file
 const moveFile = require('move-file');
+const session = require('express-session');
 
 
-
-//allows cross site scripting from localhost
-//The two lines underneath needs to be activated when running on digital ocean
-//const cors = require('cors') 
-//app.use(cors())
-
-//npm run dev -> to run nodemon
+app.use(cors())
 
 app.use(bodyParser.json({
     limit: '200mb'
@@ -27,8 +23,35 @@ app.use(bodyParser.urlencoded({
     extended: true 
 }));
 
+
+
 // Setting up API
 app.use(express.json()); 
+
+
+app.use(
+    session(
+    {
+        secret: 'fhdfhswep03y8hpwijegnidhgåuhwGRGAG', 
+        resave: true, 
+        saveUninitialized: true,
+        cookie: {
+            httpOnly: true,
+            maxAge: 10000 * 60 * 60 * 24 * 7,
+            secure: false
+          }
+    }
+));
+
+
+
+//allows cross site scripting from localhost
+
+
+//npm run dev -> to run nodemon
+
+
+
 
 app.use('/api', apiRouter);
 
@@ -38,8 +61,8 @@ app.use('/api', apiRouter);
 
 app.use(express.static(path.join(__dirname, '../public/dist')));
 
-app.listen(3000, () => {
-    console.log("Server runs at port 3000");
+app.listen(3001, () => {
+    console.log("Server runs at port 3001");
 });
 
 

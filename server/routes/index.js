@@ -2,16 +2,25 @@ const express = require('express');
 const db = require('../db'); 
 const server = require('../server')
 
+
 const router = express.Router();
+
+
 
 // VIDEO API
 
 router.get('/video', async (req, res, next) => {
     try{
-        let results = await db.video.readAll(); 
+
+        let userId = req.session.userId
+
+        console.log("2 userId", userId)
+
+        let results = await db.video.readAll(userId); 
         res.json(results);
+    
     }catch(e){
-        console.log(e)
+        
         res.sendStatus(500)
     }
 })
@@ -19,6 +28,7 @@ router.get('/video', async (req, res, next) => {
 router.get('/video/:id', async (req, res, next) => {
     try{
         let results = await db.video.readOne(req.params.id); 
+
         res.json(results);
     }catch(e){
         console.log(e)
@@ -85,7 +95,7 @@ router.get('/customer', async (req, res, next) => {
     }
 })
 
-// Get one customer 
+// Get one customer  
 router.get('/customer/:id', async (req, res, next) => {
     try{
         let results = await db.customer.readOne(req.params.id); 
@@ -149,7 +159,7 @@ router.patch('/customer/update/:id', async (req, res, next) => {
 
 router.post('/user/post', async (req, res, next) => {
     try{ 
-        
+
         let timestamp = Date.now();
         
         const response =  await db.user.create(req.body.user_email, req.body.user_password, timestamp); 
@@ -160,13 +170,47 @@ router.post('/user/post', async (req, res, next) => {
     }
 })
 
-//Add a user 
+//User Login
 
 router.post('/user/login', async (req, res, next) => {
     try{ 
+
+        console.log(req.body.user_email);
+ 
         const response = await db.user.login(req.body.user_email, req.body.user_password); 
 
-        res.status(200).json(response)
+        if(response[0].loggedIn){
+            req.session.userId = response[1].userId; 
+
+            console.log(req.session)
+                
+            console.log("1 userId", req.session.userId);
+        }
+
+        res.status(200).json(response[0])
+
+    }catch(e){
+        console.log(e)
+        res.sendStatus(500)
+    }
+})
+
+// User Logout 
+
+router.post('/user/logout', async (req, res, next) => {
+    try{ 
+
+        console.log("1 req.session.userId", req.session.userId)
+        delete req.session.userId 
+        console.log("2 req.session.userId", req.session.userId)
+
+        if(req.session.userId === undefined){
+          res.status(200).json("user logged out")  
+        }else{
+            res.status(200).json("Couldn't log user out")   
+        }
+
+        
 
     }catch(e){
         console.log(e)
@@ -207,6 +251,8 @@ router.post('/signUp/post', async (req, res, next) => {
     
        //Check if user, customer and relation between the two all have an id
        if(userId && customerId && customerUserId){
+
+        req.session.userId = userId;
 
         //User and customer are created and the user can enter the site
             return res.status(200).json({...customerNameCheck, ...checkUserEmail})

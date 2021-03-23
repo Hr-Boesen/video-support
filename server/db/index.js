@@ -1,5 +1,7 @@
 const mysql = require('mysql'); 
 
+
+
 const pool = mysql.createPool({
     connectionLimit:10, 
     host     : 'db-mysql-ams3-47998-do-user-4805626-0.b.db.ondigitalocean.com',
@@ -17,10 +19,11 @@ let signUp = {}
 
 // VIDEO API
 
-video.readAll = () => {
+video.readAll = (userId) => {
 return new Promise((resolve, reject) => {
 
-    pool.query('SELECT * FROM video', (err, results) => {
+
+    pool.query('SELECT * FROM video INNER JOIN customer_user ON customer_user.customer_id = video.fk_customer_id WHERE customer_user.user_id = ?',[userId], (err, results) => {
         if(err){
             return reject(err)
         }
@@ -199,9 +202,9 @@ customer.update = (customer_name, customer_address, customer_phone, customer_ema
                 }
 
                 if(results[0] !== undefined){
-                return resolve({loggedIn: true, message: "logged in"})
+                return resolve([{loggedIn: true, message: "logged in"}, {userId: results[0].user_id}])
                 }else{
-                return resolve({loggedIn: false, message: "Couldn't login, email or password is wrong"})  
+                return resolve([{loggedIn: false, message: "Couldn't login, email or password is wrong"},{userId: null}])  
                 }
         
             })
