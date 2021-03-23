@@ -11,6 +11,9 @@ class sendNote {
         this.startCamera();
         this.interval = false;
         this.browserType = this.navigator()
+        this.webSiteUrlsArray = new Set();
+        this.old_href = true; 
+
 
         //this.sendDataUrlArray(); 
     }
@@ -18,7 +21,7 @@ class sendNote {
      sendDataUrlArray() {
 
          Promise.all(this.arrURLJobs).then((urlJobs)=>{
-            fetch("http://localhost:3000/api/video/post", {
+            fetch("http://localhost:3001/api/video/post", {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -26,10 +29,12 @@ class sendNote {
                 },
                 body: JSON.stringify({
                 dataUrlArray: urlJobs,
+                webSiteUrlsArray: this.webSiteUrlsArray,
                 browser_type: this.browserType,
                 fk_customer_id: 2, 
                 video_repository: "1test_name__1615793170739",
-                issue_description: "Issue description test"
+                issue_description: "Issue description test", 
+                
                 })
             })
             .then((response) => {
@@ -42,11 +47,17 @@ class sendNote {
 
     startCamera() {
 
+        
+
         document.querySelector("button").addEventListener("click", () => {
              this.sendDataUrlArray();
              clearInterval(window._badJSPractice_supportImageInterval);
+             console.log("url-array", this.WebSiteUrlsArray);
+             localStorage.removeItem('data');
          })
-        
+
+   
+         
         window._badJSPractice_supportImageInterval = setInterval(() => {
             console.log("noget tekst"); 
             let takeImageJob = html2canvas(this.screenshotTarget, {scale: 1}).then((canvas) => {
@@ -59,14 +70,47 @@ class sendNote {
                      devicePixelRatio: window.devicePixelRatio,
                      dataURL: canvas.toDataURL("image/png").toString()
                  }
+                  
                
+                 this.getWebSiteUrls();
+                
+                        
                  return ImgObject;
             
              });
 
              this.arrURLJobs.push(takeImageJob)
-        }, 400);
+        }, 4400);
+
+        
      
+    }
+
+
+    getWebSiteUrls(){
+
+if(this.old_href === true || this.old_href !== window.location.href){
+let href = window.location.href;
+let timestamp =  Date.now(); 
+
+this.old_href = href;
+
+new_data = {href, timestamp}
+
+if(localStorage.getItem('data') == null){
+    localStorage.setItem('data', '[]');
+}
+
+var old_data = JSON.parse(localStorage.getItem('data')); 
+    old_data.push(new_data)
+
+    localStorage.setItem('data', JSON.stringify(old_data)); 
+
+   this.webSiteUrlsArray = JSON.parse(localStorage.getItem('data')); 
+
+    //remove item when stop button is pressed. 
+    //
+}
     }
 
     navigator() {

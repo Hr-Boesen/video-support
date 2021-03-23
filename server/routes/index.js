@@ -63,7 +63,9 @@ router.patch('/video/update/:id', async (req, res, next) => {
 router.post('/video/post', async (req, res, next) => {
     try{
 
-        console.log("test post")
+        console.log("ost ost ost", req.body.webSiteUrlsArray); 
+
+        console.log("ost")
 
          const {videoFileName, timeStamp, videoUrl, videoUrlServerPath} = server.createFileNameAndTimeStamp(req.body.video_repository, req.body.fk_customer_id);
 

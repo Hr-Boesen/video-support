@@ -176,7 +176,7 @@ const createImageFolderAndImages = async (dataUrlArray, videoFileName, videoUrlS
     createVideoFile(durationFile, videoFileName, videoUrlServerPath)
 
     rimraf(imageDir, function () { console.log("imageDir folder deleted"); });
-
+ 
 }
 
 const createFileNameAndTimeStamp = (videoRepository, customerId)=>{
