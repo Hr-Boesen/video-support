@@ -85,7 +85,7 @@ const createImageFolderAndImages = async (dataUrlArray, videoFileName, videoUrlS
     for (let index = 0; index < dataUrlArray.length; index++) {
         minHeight = Math.min(dataUrlArray[index].innerHeight, minHeight);
         minWidth = Math.min(dataUrlArray[index].innerWidth, minWidth);
-    }
+    } 
 
     if(minHeight % 2 != 0){
         minHeight = minHeight - 1;
@@ -185,7 +185,7 @@ const createFileNameAndTimeStamp = (videoRepository, customerId)=>{
     let videoFileName = customerId + "id" + timeStamp + ".mp4"
 
     let videoUrlServerPath = 'public/dist/video_repository/' + videoRepository + '/' + videoFileName
-    let videoUrl = 'localhost:3000/video_repository/' + videoRepository + '/' + videoFileName
+    let videoUrl = 'localhost:3001/video_repository/' + videoRepository + '/' + videoFileName
 
     return {videoFileName, timeStamp, videoUrl, videoUrlServerPath }
 }

@@ -11,8 +11,8 @@ class sendNote {
         this.startCamera();
         this.interval = false;
         this.browserType = this.navigator()
-        this.webSiteUrlsArray = new Set();
-        this.old_href = true; 
+        this.webSiteUrlsArray;
+        this.urlScriptFlag= false; 
 
 
         //this.sendDataUrlArray(); 
@@ -31,7 +31,7 @@ class sendNote {
                 dataUrlArray: urlJobs,
                 webSiteUrlsArray: this.webSiteUrlsArray,
                 browser_type: this.browserType,
-                fk_customer_id: 2, 
+                fk_customer_id: 1, 
                 video_repository: "1test_name__1615793170739",
                 issue_description: "Issue description test", 
                 
@@ -71,8 +71,11 @@ class sendNote {
                      dataURL: canvas.toDataURL("image/png").toString()
                  }
                   
-               
-                 this.getWebSiteUrls();
+               if(this.urlScriptFlag === false){
+                   this.getWebSiteUrls();
+                   this.urlScriptFlag = true; 
+               }
+                 
                 
                         
                  return ImgObject;
@@ -80,7 +83,7 @@ class sendNote {
              });
 
              this.arrURLJobs.push(takeImageJob)
-        }, 4400);
+        },400);
 
         
      
@@ -88,8 +91,6 @@ class sendNote {
 
 
     getWebSiteUrls(){
-
-if(this.old_href === true || this.old_href !== window.location.href){
 let href = window.location.href;
 let timestamp =  Date.now(); 
 
@@ -111,7 +112,7 @@ var old_data = JSON.parse(localStorage.getItem('data'));
     //remove item when stop button is pressed. 
     //
 }
-    }
+    
 
     navigator() {
         var ua = navigator.userAgent,
@@ -136,7 +137,7 @@ var old_data = JSON.parse(localStorage.getItem('data'));
 new sendNote();
 
 
-
+ 
 
 /*
 html2canvas(container).then(function(canvas) {

@@ -25,6 +25,25 @@ router.get('/video', async (req, res, next) => {
     }
 })
 
+router.get('/video/links', async (req, res, next) => {
+    try{
+
+        let userId = req.session.userId
+
+        console.log(userId)
+
+        let results = await db.video.readAllVideoLinks(userId); 
+        res.json(results);
+    
+    }catch(e){
+        
+        res.sendStatus(500)
+    }
+})
+
+
+
+
 router.get('/video/:id', async (req, res, next) => {
     try{
         let results = await db.video.readOne(req.params.id); 
@@ -39,6 +58,8 @@ router.get('/video/:id', async (req, res, next) => {
 router.delete('/video/delete/:id', async (req, res, next) => {
     try{
          await db.video.delete(req.params.id); 
+
+         
         res.status(200).json({
             msg: "Deleted"
           })
@@ -74,7 +95,10 @@ router.post('/video/post', async (req, res, next) => {
          server.createImageFolderAndImages(req.body.dataUrlArray, videoFileName, videoUrlServerPath)
          
             
-         await db.video.create(req.body.fk_customer_id, videoFileName, videoUrl, req.body.browser_type, req.body.issue_description, timeStamp); 
+         const videoId = await db.video.create(req.body.fk_customer_id, videoFileName, videoUrl, req.body.browser_type, req.body.issue_description, timeStamp); 
+
+         await db.video.websiteUrls(videoId, req.body.webSiteUrlsArray); 
+
         res.status(200).json({
             msg: "Posted"
           })

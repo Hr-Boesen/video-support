@@ -23,7 +23,7 @@ video.readAll = (userId) => {
 return new Promise((resolve, reject) => {
 
 
-    pool.query('SELECT * FROM video INNER JOIN customer_user ON customer_user.customer_id = video.fk_customer_id WHERE customer_user.user_id = ?',[userId], (err, results) => {
+    pool.query('SELECT * FROM video INNER JOIN  website_url ON website_url.fk_video_id = video.video_id INNER JOIN customer_user ON customer_user.customer_id = video.fk_customer_id WHERE customer_user.user_id = ?',[userId], (err, results) => {
         if(err){
             return reject(err)
         }
@@ -47,7 +47,7 @@ video.readOne = (video_id) => {
     
         })
     
-    })
+    }) 
 }
 
 video.delete = (video_id) => {
@@ -57,13 +57,16 @@ video.delete = (video_id) => {
             if(err){
                 return reject(err)
             }
-    
-            return resolve("everything is fine")
-    
         })
-    
+            pool.query('DELETE FROM website_url WHERE fk_video_id = ?',[video_id], (err, results) => {
+                if(err){
+                    return reject(err)
+                }
+    })
+            return resolve("everything is fine")
     })
 }
+
 
 video.update = (video_id, issue_description) => {
     return new Promise((resolve, reject) => {
@@ -83,13 +86,33 @@ video.update = (video_id, issue_description) => {
 video.create = (fk_customer_id, video_path, video_url, browser_type, issue_description, timestamp) => {
     return new Promise((resolve, reject) => {
 
-        pool.query('INSERT INTO video SET fk_customer_id = ?, video_path = ?, video_url = ?, browser_type = ?, issue_description = ?, timestamp = ?',[fk_customer_id, video_path, video_url, browser_type, issue_description, timestamp], (err, results) => {
+        pool.query('INSERT INTO video SET fk_customer_id = ?, video_path = ?, video_url = ?, browser_type = ?, issue_description = ?, timestamp = ?',[fk_customer_id, video_path, video_url, browser_type, issue_description, timestamp], (err, result) => {
             if(err){
                 return reject(err)
             }
-            return resolve("everything is fine")
+            return resolve(result.insertId)
     
         })
+    
+    })
+}
+
+video.websiteUrls = (videoId, websiteUrls) => {
+    return new Promise((resolve, reject) => {
+
+        websiteUrls.forEach(websiteUrl => {
+
+            pool.query('INSERT INTO website_url SET fk_video_id = ?, website_url = ?, timestamp = ?',[videoId, websiteUrl.href, websiteUrl.timestamp], (err, result) => {
+                if(err){
+                    return reject(err)
+                }
+                return resolve(result.insertId)
+        
+            })
+            
+        });
+
+       
     
     })
 }
