@@ -81,6 +81,40 @@ router.patch('/video/update/:id', async (req, res, next) => {
     }
 })
 
+
+//Video and sound upload
+
+router.post('/videoandsound/post', async (req, res, next) => {
+  
+        // const {videoFileName, timeStamp, videoUrl, videoUrlServerPath} = server.createFileNameAndTimeStamp(req.body.video_repository, req.body.fk_customer_id);
+
+        console.log(req.files);
+        let sampleFile;
+        let uploadPath;
+      
+        
+        if (!req.files || Object.keys(req.files).length === 0) {
+          return res.status(400).json({status: 'No files were uploaded.'});
+        }
+
+    
+      
+        // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+
+        sampleFile = req.files["ost.mp4"];
+        uploadPath = __dirname + "/test.mp4"
+      
+        // Use the mv() method to place the file somewhere on your server
+        sampleFile.mv(uploadPath, function(err) {
+          if (err)
+            return res.status(500).json({err: "json"});
+      
+          res.json({succces: 'File uploaded!'});
+        });
+   
+})
+
+
 router.post('/video/post', async (req, res, next) => {
     try{
 
@@ -93,7 +127,6 @@ router.post('/video/post', async (req, res, next) => {
          console.log("videoFileName", videoFileName);
          
          server.createImageFolderAndImages(req.body.dataUrlArray, videoFileName, videoUrlServerPath)
-         
             
          const videoId = await db.video.create(req.body.fk_customer_id, videoFileName, videoUrl, req.body.browser_type, req.body.issue_description, timeStamp); 
 
@@ -107,6 +140,8 @@ router.post('/video/post', async (req, res, next) => {
         res.sendStatus(500)
     }
 })
+
+
 
 // CUSTOMER API
 
@@ -294,6 +329,8 @@ router.post('/signUp/post', async (req, res, next) => {
         res.sendStatus(500)
     }
 })
+
+
 
 
 

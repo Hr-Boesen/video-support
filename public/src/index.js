@@ -49,7 +49,7 @@ class sendNote {
 
         
 
-        document.querySelector("button").addEventListener("click", () => {
+        document.querySelector("#ordrestyringVideoTest").addEventListener("click", () => {
              this.sendDataUrlArray();
              clearInterval(window._badJSPractice_supportImageInterval);
              console.log("url-array", this.WebSiteUrlsArray);

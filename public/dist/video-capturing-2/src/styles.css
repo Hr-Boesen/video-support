@@ -1,0 +1,44 @@
+body {
+   text-align: right;
+  }
+  
+  #sendSupportVideo, #start, #stop {
+    display: block;
+    margin: 0.25em 0.25em;
+    padding: 0.3em;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 7px;
+    color: black; 
+  }
+
+  i{
+    padding: 5px;
+  }
+
+  video {
+    border: 1px solid lightgray;
+    width: 100%;
+    background-color: #eee;
+  }
+  
+  .myBar {
+    width: 0%;
+    background: #439D44; 
+    padding: 0;
+    height: 2em;
+    border-radius: 7px;
+    margin: -1px;
+  }
+
+  .card{
+    min-width: 300px;
+    width: 30%;
+    margin: auto; 
+    margin-top: 20px;
+    border: 1px solid grey;
+    padding: 16px;
+    border-radius: 7px;
+}
+
+  
