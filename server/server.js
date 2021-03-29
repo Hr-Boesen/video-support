@@ -13,7 +13,13 @@ const moveFile = require('move-file');
 const session = require('express-session');
 
 
+const fileUpload = require('express-fileupload');
 
+// default options
+app.use(fileUpload({
+    useTempFiles : true,
+    tempFileDir : '/tmp/'
+}));
 
 
 app.use(cors())
@@ -226,37 +232,6 @@ const createVideoFile = (durationFile,videoFileName, videoUrlServerPath) => {
 
 //TEST VIDEO UPLOAD 
 
-const fileUpload = require('express-fileupload');
-const { openStdin } = require("process");
-
-// default options
-app.use(fileUpload({
-    useTempFiles : true,
-    tempFileDir : '/tmp/'
-}));
-
-app.post('/upload', function(req, res) { 
-
-   console.log(req.body);
-  let sampleFile;
-  let uploadPath;
-
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400).json({status: 'No files were uploaded.'});
-  }
-
-  // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-  sampleFile = req.files["ost.mp4"];
-  uploadPath = __dirname + "/test.mp4"
-
-  // Use the mv() method to place the file somewhere on your server
-  sampleFile.mv(uploadPath, function(err) {
-    if (err)
-      return res.status(500).json({err: "json"});
-
-    res.json({succces: 'File uploaded!'});
-  });
-}); 
 
 
 
@@ -264,4 +239,5 @@ app.post('/upload', function(req, res) {
 exports.createImageFolderAndImages = createImageFolderAndImages;
 exports.createFileNameAndTimeStamp = createFileNameAndTimeStamp;
 exports.createVideoRepositoryForNewCustomers = createVideoRepositoryForNewCustomers;
+exports.moveFileToCustomerFolder = moveFileToCustomerFolder;
 

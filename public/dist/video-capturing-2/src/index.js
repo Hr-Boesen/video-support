@@ -139,10 +139,12 @@ class videoSupport {
     console.log("upload come on...")
     let form = new FormData()
     form.append("fk_customer_id", 1)
-    form.append("video_repository", "1test_name__1615793170739")
+    form.append("video_repository", "1__1616584421474")
     form.append("issue_description", "Issue description test")
+    form.append("browser_type", "Chrome")
+    form.append("site_url", "https://www.dr.dk")
     form.append("ost.mp4", this.completeBlob)
-      fetch('http://localhost:3001/upload', {
+      fetch('http://localhost:3001/api/upload', {
         withCredentials:true, 
         method: 'POST',
         body: form,

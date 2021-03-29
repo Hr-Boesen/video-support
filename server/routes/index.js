@@ -331,6 +331,38 @@ router.post('/signUp/post', async (req, res, next) => {
 })
 
 
+router.post('/upload', async(req, res) => {  
+
+    console.log(req.body);
+   let sampleFile;
+   let uploadPath;
+ 
+   if (!req.files || Object.keys(req.files).length === 0) {
+     return res.status(400).json({status: 'No files were uploaded.'});
+   }
+
+   const {videoFileName, timeStamp, videoUrl, videoUrlServerPath} = server.createFileNameAndTimeStamp(req.body.video_repository, req.body.fk_customer_id);
+
+   console.log("videoFileName", videoFileName);
+ 
+   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+   sampleFile = req.files["ost.mp4"];
+   uploadPath = videoUrlServerPath;
+ 
+   // Use the mv() method to place the file somewhere on your server
+   sampleFile.mv(uploadPath, async (err) => {
+     if (err)
+       return res.status(500).json({err: "json"}); 
+
+       const videoId = await db.video.create(req.body.fk_customer_id, videoFileName, videoUrl, req.body.browser_type, req.body.issue_description, timeStamp, req.body.site_url); 
+
+ 
+     res.json({succces: 'File uploaded!'});
+
+
+   });
+ }); 
+
 
 
 

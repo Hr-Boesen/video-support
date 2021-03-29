@@ -23,7 +23,7 @@ video.readAll = (userId) => {
 return new Promise((resolve, reject) => {
 
 
-    pool.query('SELECT * FROM video INNER JOIN  website_url ON website_url.fk_video_id = video.video_id INNER JOIN customer_user ON customer_user.customer_id = video.fk_customer_id WHERE customer_user.user_id = ?',[userId], (err, results) => {
+    pool.query('SELECT * FROM video INNER JOIN customer_user ON customer_user.customer_id = video.fk_customer_id WHERE customer_user.user_id = ?',[userId], (err, results) => {
         if(err){
             return reject(err)
         }
@@ -83,10 +83,10 @@ video.update = (video_id, issue_description) => {
     })
 }
 
-video.create = (fk_customer_id, video_path, video_url, browser_type, issue_description, timestamp) => {
+video.create = (fk_customer_id, video_path, video_url, browser_type, issue_description, timestamp, website_url) => {
     return new Promise((resolve, reject) => {
 
-        pool.query('INSERT INTO video SET fk_customer_id = ?, video_path = ?, video_url = ?, browser_type = ?, issue_description = ?, timestamp = ?',[fk_customer_id, video_path, video_url, browser_type, issue_description, timestamp], (err, result) => {
+        pool.query('INSERT INTO video SET fk_customer_id = ?, video_path = ?, video_url = ?, browser_type = ?, issue_description = ?, timestamp = ?,  website_url = ?',[fk_customer_id, video_path, video_url, browser_type, issue_description, timestamp, website_url], (err, result) => {
             if(err){
                 return reject(err)
             }
@@ -114,6 +114,21 @@ video.websiteUrls = (videoId, websiteUrls) => {
 
        
     
+    })
+}
+
+video.websiteUrlRealVideo = (videoId, websiteUrl) => {
+    return new Promise((resolve, reject) => {
+
+
+            pool.query('INSERT INTO website_url SET fk_video_id = ?, website_url = ?',[videoId, websiteUrl], (err, result) => {
+                if(err){
+                    return reject(err)
+                }
+                return resolve(result.insertId)
+        
+            })
+
     })
 }
 
